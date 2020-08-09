@@ -23,8 +23,10 @@ function filterResults(CourseCards){
     for (let i = 0; i<CourseCards.length; i++){
         console.log(CourseCards[i].href)
         if(CourseCards[i].href in savedSettings.saved){
-           
             CourseCards[i].parentNode.style.border = "8px solid green"
+        }
+        else if(CourseCards[i].href in savedSettings.removed){
+            CourseCards[i].remove()
         }
     }
 }
@@ -72,14 +74,18 @@ function createButtonDiv(){
 
 
 function saveForLater(e){
+    e.preventDefault()
+    e.stopPropagation()
     const parentElement = getParentElement(e)
     parentElement.parentNode.style.border = "8px solid green"
-    //parentElement.style.backgroundColor = "green"
     saveToLocalStorage(parentElement.href, "saved")
-
 }
 function notInterested(e){
-    return 0
+    e.preventDefault()
+    e.stopPropagation()
+    const parentElement = getParentElement(e)
+    saveToLocalStorage(parentElement.href, "removed")
+    parentElement.remove()
 }
 function alreadyCompleted(e){
     return 0
@@ -108,8 +114,6 @@ function generateAlreadyCompletedButton(){
 }
 /*FILTER BUTTON GENERATORS END*/
 function getParentElement(e){
-    e.preventDefault()
-    e.stopPropagation()
     console.log(e.target.parentNode.parentNode)
     return e.target.parentNode.parentNode
 }
