@@ -1,6 +1,5 @@
 console.log("connected")
 const SQstorage = window.localStorage
-
 let savedSettings = {
     removed:{},
     saved:{},
@@ -26,16 +25,13 @@ function startUp(){
     filterResults(CourseCards)
 }
 function filterResults(CourseCards){
-    console.log("filterResults Triggered")
-    console.log(savedSettings)
-    console.log(CourseCards)
+    // console.log("filterResults Triggered")
+    // console.log(savedSettings)
+    // console.log(CourseCards)
     const cardsToRemove = [];
     for (let i = 0; i<CourseCards.length; i++){
-        console.log(CourseCards[i].href)
-        if(CourseCards[i].href in savedSettings.saved){
-            CourseCards[i].parentNode.style.border = "8px solid green"
-        }
-        else if(CourseCards[i].href in savedSettings.removed || CourseCards[i].href in savedSettings.done){
+        // console.log(CourseCards[i].href)
+        if(CourseCards[i].href in savedSettings.removed || CourseCards[i].href in savedSettings.done || CourseCards[i].href in savedSettings.saved){
             cardsToRemove.push(CourseCards[i])
         }
     }
@@ -80,21 +76,11 @@ function createButtonDiv(){
     return buttonDiv
 }
 
-
-function saveForLater(e){
+function processFilterButtons(e, sourceIn){
     e.preventDefault()
     e.stopPropagation()
     const parentElement = getParentElement(e)
-    parentElement.parentNode.style.border = "8px solid green"
-    saveToLocalStorage(parentElement.href, "saved")
-}
-function notInterestedOrCompleted(e, sourceIn=0){
-    e.preventDefault()
-    e.stopPropagation()
-    const parentElement = getParentElement(e)
-    let destination = "removed";
-    if(sourceIn) destination = "done"
-    saveToLocalStorage(parentElement.href, destination)
+    saveToLocalStorage(parentElement.href, sourceIn)
     parentElement.remove()
 }
 
@@ -103,21 +89,21 @@ function generateSaveForLater(){
     let saveForLaterButton = document.createElement("BUTTON")
     saveForLaterButton.className = "saveButton"        
     saveForLaterButton.innerHTML = "\u2764"
-    saveForLaterButton.addEventListener("click", saveForLater)
+    saveForLaterButton.addEventListener("click", ()=>{processFilterButtons(event, "saved")})
     return saveForLaterButton;
 }
 function generateNotInterestedButton(){
     let notInterestedButton = document.createElement("BUTTON")
     notInterestedButton.className = "removeButton"
     notInterestedButton.innerHTML = "\u2716"
-    notInterestedButton.addEventListener("click", notInterestedOrCompleted)
+    notInterestedButton.addEventListener("click", ()=>{processFilterButtons(event, "removed")})
     return notInterestedButton;
 }
 function generateAlreadyCompletedButton(){
     let alreadyCompletedButton  = document.createElement("BUTTON")
     alreadyCompletedButton.className = "completedButton"
     alreadyCompletedButton.innerHTML = "\u2713"
-    alreadyCompletedButton.addEventListener("click", ()=>{notInterestedOrCompleted(event, 1)})
+    alreadyCompletedButton.addEventListener("click", ()=>{processFilterButtons(event, "done")})
     return alreadyCompletedButton
 }
 /*FILTER BUTTON GENERATORS END*/
