@@ -1,3 +1,4 @@
+
 console.log("connected")
 const SQstorage = window.localStorage
 let savedSettings = {
@@ -43,10 +44,10 @@ function filterResults(CourseCards){
 const observer = new MutationObserver(mutations => {
     //console.log(mutations)
     for(let mutation of mutations){
-    //    console.log(mutation.target.className)
-        if(mutation.target.className === "rc-Suggestion" ){
+        console.log(mutation.target.className)
+        if(mutation.target.className === "filters-section horizontal-box" ){
             startUp();
-            break;
+           break;
           }
         // for (let addedNode of mutation.addedNodes){
            
